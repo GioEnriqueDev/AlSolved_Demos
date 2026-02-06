@@ -357,20 +357,18 @@ export default function ReaderDemo() {
                         {/* @ts-ignore */}
                         <HTMLFlipBook
                             width={550}
-                            height={780}
+                            height={733} // A4 Ratio (1:1.414) approx
                             size="stretch"
                             minWidth={300}
                             maxWidth={1000}
                             minHeight={400}
-                            maxHeight={1400}
+                            maxHeight={1500}
                             maxShadowOpacity={0.5}
                             showCover={true}
                             mobileScrollSupport={true}
-                            className="demo-book"
-                            style={{ backgroundColor: 'transparent' }}
+                            className="demo-book focus:outline-none"
+                            style={{ margin: '0 auto' }} // Explicit centering
                             ref={bookRef}
-                            usePortrait={false} // FORCE SPREAD VIEW
-                            startPage={0}
                             flippingTime={1000}
                         >
                             {PAGES.map((p) => (
@@ -396,15 +394,6 @@ export default function ReaderDemo() {
                 }
                 .demo-page {
                     background-color: white;
-                }
-                /* Ensure left/right spread shading */
-                .demo-page:nth-child(even) {
-                   box-shadow: inset 20px 0 50px -20px rgba(0,0,0,0.15);
-                   border-radius: 4px 16px 16px 4px;
-                }
-                .demo-page:nth-child(odd) {
-                   box-shadow: inset -20px 0 50px -20px rgba(0,0,0,0.15);
-                   border-radius: 16px 4px 4px 16px;
                 }
             `}</style>
         </div>
