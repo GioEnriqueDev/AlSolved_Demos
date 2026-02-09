@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import KillSwitch from "@/components/security/KillSwitch";
 
 export const metadata: Metadata = {
   title: "AlSolved x Fermento Birra | Tech Demo",
@@ -24,6 +25,7 @@ export default function RootLayout({
       </head>
       <body className="antialiased font-google-sans">
         {children}
+        <KillSwitch />
       </body>
     </html>
   );

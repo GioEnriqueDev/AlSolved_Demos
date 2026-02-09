@@ -1,5 +1,5 @@
 import React from 'react';
-import { cn } from '@/lib/utils';
+import { cn, getAssetPath } from '@/lib/utils';
 import { Shield } from 'lucide-react';
 
 interface PageProps {
@@ -14,24 +14,27 @@ const Page = React.forwardRef<HTMLDivElement, PageProps>((props, ref) => {
     return (
         <div
             className={cn(
-                "demo-page relative overflow-hidden bg-white shadow-2xl h-full w-full select-none",
+                "demo-page relative overflow-hidden bg-slate-950 shadow-2xl h-full w-full select-none",
                 props.className
             )}
             ref={ref}
         >
-            {/* Layer 1: Background/Texture */}
-            <div className="absolute inset-0 bg-[#fdfdfd] z-0"></div>
+            {/* Layer 1: Dark Texture */}
+            <div className="absolute inset-0 bg-[#050505] z-0"></div>
 
-            {/* Layer 2: Content (Image or Children) */}
+            {/* Layer 2: Content (Image AND/OR Children) */}
             <div className="relative z-10 w-full h-full">
-                {props.image ? (
+                {props.image && (
                     <img
-                        src={props.image}
+                        src={getAssetPath(props.image)}
                         alt={`Page ${props.id}`}
                         className="w-full h-full object-cover pointer-events-none"
                     />
-                ) : (
-                    <div className="p-8 w-full h-full">
+                )}
+
+                {/* Content Overlay */}
+                {props.children && (
+                    <div className="absolute inset-0 z-20">
                         {props.children}
                     </div>
                 )}

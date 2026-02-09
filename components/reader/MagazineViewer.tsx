@@ -51,6 +51,25 @@ export default function MagazineViewer({ children }: MagazineViewerProps) {
                 >
                     <ArrowLeft className="w-5 h-5" />
                 </button>
+
+                {/* Brand / Subscription Info */}
+                <div className="bg-orange-600 shadow-lg shadow-orange-900/20 border border-orange-500 px-6 py-3 rounded-full flex items-center gap-3 pointer-events-auto cursor-help group relative">
+                    <span className="text-white font-black uppercase tracking-widest text-xs">Fermento Birra Magazine</span>
+
+                    {/* Tooltip / Mini-Modal on Hover */}
+                    <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-4 w-80 bg-white p-6 rounded-2xl shadow-xl border border-slate-100 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none group-hover:pointer-events-auto">
+                        <h4 className="font-black text-slate-900 uppercase italic mb-2">Abbonati Subito!</h4>
+                        <p className="text-xs text-slate-600 leading-relaxed mb-3">
+                            Ricevi per un anno il bimestrale Fermento Birra Magazine direttamente a casa tua.
+                            <strong>Sei numeri ad un prezzo speciale!</strong>
+                        </p>
+                        <div className="text-[10px] font-bold text-orange-600 uppercase tracking-widest bg-orange-50 p-2 rounded-lg text-center">
+                            Spedito la 2° settimana dei mesi dispari
+                        </div>
+                        <div className="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-3 h-3 bg-white rotate-45 border-b border-r border-slate-100"></div>
+                    </div>
+                </div>
+
                 <div className="bg-white/90 backdrop-blur shadow-lg border border-slate-200 px-6 py-3 rounded-full flex items-center gap-2 pointer-events-auto">
                     <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
                     <span className="text-xs font-black uppercase tracking-widest text-slate-600">Secure View Active</span>

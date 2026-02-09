@@ -133,7 +133,7 @@ export default function Home() {
             {/* Sales Focus Action Buttons */}
             <motion.div variants={textReveal} className="flex flex-col md:flex-row items-center gap-4 pt-6">
               <Link
-                href="#demo"
+                href="/login"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
                 className="px-12 py-5 rounded-full bg-primary text-white font-black text-lg hover:brightness-110 transition-all duration-300 shadow-2xl shadow-primary/30 flex items-center gap-3 group"
@@ -166,7 +166,7 @@ export default function Home() {
             title="Secure Digital Reader"
             description="Protezione 'Highlander' per il magazine Fermento Birra: accesso unico, watermark dinamico e anti-leak avanzato."
             icon={<Shield className="w-6 h-6" />}
-            href="/reader"
+            href="/login"
             accent="bg-slate-900"
             label="PILLAR 1: SECURITY"
           />
@@ -174,7 +174,7 @@ export default function Home() {
             title="Smart Event ERP"
             description="Automazione logistica per espositori: validazione real-time hotel/staff e generazione pass digitale."
             icon={<Zap className="w-6 h-6" />}
-            href="/events"
+            href="/events/hotel"
             accent="bg-primary"
             label="PILLAR 2: AUTOMATION"
           />
