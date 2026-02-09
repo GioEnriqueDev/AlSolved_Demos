@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "deploy": "next build && touch out/.nojekyll && npx gh-pages -d out -b gh-pages"
+    "deploy": "next build && type nul > out/.nojekyll && npx gh-pages -d out -b gh-pages -t"
   },
   "dependencies": {
     "@radix-ui/react-avatar": "^1.1.11",

@@ -8,7 +8,7 @@ import React from 'react';
 
 // Define variants outside component with proper typing
 const textReveal: Variants = {
-  hidden: { opacity: 0, y: 30 },
+  hidden: { opacity: 1, y: 30 },
   show: {
     opacity: 1,
     y: 0,
@@ -17,7 +17,7 @@ const textReveal: Variants = {
 };
 
 const staggerText: Variants = {
-  hidden: { opacity: 0 },
+  hidden: { opacity: 1 },
   show: {
     opacity: 1,
     transition: {
@@ -28,7 +28,7 @@ const staggerText: Variants = {
 };
 
 const containerMatches: Variants = {
-  hidden: { opacity: 0 },
+  hidden: { opacity: 1 },
   show: {
     opacity: 1,
     transition: {
@@ -59,7 +59,7 @@ export default function Home() {
         {/* AlSolved Premium Header */}
         <header className="flex items-center justify-between py-6">
           <motion.div
-            initial={{ opacity: 0, y: -10 }}
+            initial={{ opacity: 1, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             className="flex items-center gap-4"
           >
@@ -90,7 +90,7 @@ export default function Home() {
 
           {/* Social Proof / Status Pill */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
+            initial={{ opacity: 1, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             className="hidden md:flex items-center gap-4"
           >
@@ -190,7 +190,7 @@ export default function Home() {
 
         {/* Why AlSolved Section - Targeted at Fermento */}
         <motion.div
-          initial={{ opacity: 0 }}
+          initial={{ opacity: 1 }}
           whileInView={{ opacity: 1 }}
           transition={{ duration: 1 }}
           className="pb-32 text-center max-w-4xl mx-auto"
