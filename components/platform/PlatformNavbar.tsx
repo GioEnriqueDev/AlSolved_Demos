@@ -16,7 +16,7 @@ export default function PlatformNavbar() {
     }, []);
 
     return (
-        <nav className={`fixed top-0 inset-x-0 z-[60] transition-colors duration-500 flex items-center justify-between px-8 md:px-16 py-4 ${isScrolled ? 'bg-black/90 backdrop-blur-md border-b border-white/10' : 'bg-transparent'}`}>
+        <nav className={`hidden md:flex fixed top-0 inset-x-0 z-[60] transition-colors duration-500 items-center justify-between px-8 md:px-16 py-4 ${isScrolled ? 'bg-black/90 backdrop-blur-md border-b border-white/10' : 'bg-transparent'}`}>
             <div className="flex items-center gap-12">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-3">

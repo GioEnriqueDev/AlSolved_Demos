@@ -6,309 +6,386 @@ import {
     Calendar,
     Users,
     Hotel,
-    MapPin,
-    AlertTriangle,
-    CheckCircle2,
     Plus,
     Minus,
     ArrowLeft,
-    ArrowRight,
     QrCode,
-    Download,
     Printer,
-    X,
-    Zap,
-    Info,
-    Activity
+    Trash2,
+    Beer,
+    Ticket,
+    CheckCircle2,
+    AlertTriangle,
+    Loader2,
+    FileText
 } from 'lucide-react';
 import Link from 'next/link';
 
-export default function EventManagerDemo() {
-    const [staffCount, setStaffCount] = useState(12);
-    const [isGenerating, setIsGenerating] = useState(false);
-    const [showPass, setShowPass] = useState(false);
+// Types
+type StaffMember = { id: string; name: string; surname: string; role: 'Staff' };
+type ReducedTicket = { id: string; name: string; surname: string; role: 'Reduced' };
+type BeerItem = { id: string; name: string; degree: string; description: string };
 
-    // Configuration - Simulated Hotel Capacity
-    const HOTEL_CAPACITY = {
-        totalRooms: 10,
-        bedsPerRoom: 2,
+export default function EventManagerDemo() {
+    // State
+    const [staffList, setStaffList] = useState<StaffMember[]>([]);
+    const [reducedList, setReducedList] = useState<ReducedTicket[]>([]);
+    const [beerList, setBeerList] = useState<BeerItem[]>([]);
+
+    // Inputs State
+    const [staffInput, setStaffInput] = useState({ name: '', surname: '' });
+    const [reducedInput, setReducedInput] = useState({ name: '', surname: '' });
+    const [beerInput, setBeerInput] = useState({ name: '', degree: '', description: '' });
+
+    const [isPrinting, setIsPrinting] = useState(false);
+
+    // Config
+    const MAX_STAFF = 4;
+    const MAX_REDUCED = 5;
+    const HOTEL_CAPACITY_BEDS = 4; // Simulated Constraint
+
+    // Derived State
+    const totalStaff = staffList.length;
+    const isOverCapacity = totalStaff > HOTEL_CAPACITY_BEDS;
+
+    // Handlers
+    const addStaff = () => {
+        if (staffInput.name && staffInput.surname && totalStaff < MAX_STAFF) {
+            setStaffList([...staffList, { id: crypto.randomUUID(), ...staffInput, role: 'Staff' }]);
+            setStaffInput({ name: '', surname: '' });
+        }
     };
 
-    const totalBeds = HOTEL_CAPACITY.totalRooms * HOTEL_CAPACITY.bedsPerRoom;
-    const isOverCapacity = staffCount > totalBeds;
-    const missingBeds = staffCount - totalBeds;
+    const addReduced = () => {
+        if (reducedInput.name && reducedInput.surname && reducedList.length < MAX_REDUCED) {
+            setReducedList([...reducedList, { id: crypto.randomUUID(), ...reducedInput, role: 'Reduced' }]);
+            setReducedInput({ name: '', surname: '' });
+        }
+    };
 
-    const handleGeneratePass = () => {
-        setIsGenerating(true);
-        setTimeout(() => {
-            setIsGenerating(false);
-            setShowPass(true);
-        }, 1500);
+    const addBeer = () => {
+        if (beerInput.name && beerInput.degree) {
+            setBeerList([...beerList, { id: crypto.randomUUID(), ...beerInput }]);
+            setBeerInput({ name: '', degree: '', description: '' });
+        }
+    };
+
+    const removeStaff = (id: string) => setStaffList(staffList.filter(s => s.id !== id));
+    const removeReduced = (id: string) => setReducedList(reducedList.filter(r => r.id !== id));
+    const removeBeer = (id: string) => setBeerList(beerList.filter(b => b.id !== id));
+
+    const handlePrint = () => {
+        setIsPrinting(true);
+        setTimeout(() => setIsPrinting(false), 2000);
     };
 
     return (
-        <div className="min-h-screen bg-slate-50 flex flex-col font-google-sans selection:bg-primary selection:text-white">
+        <div className="min-h-screen bg-slate-50 flex flex-col font-google-sans selection:bg-primary selection:text-white pb-20">
             {/* Header */}
-            <header className="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-0 z-20 shadow-sm">
+            <header className="bg-white border-b border-slate-200 px-8 py-4 flex items-center justify-between sticky top-0 z-30 shadow-sm backdrop-blur-md bg-white/80">
                 <div className="flex items-center gap-6">
                     <Link href="/" className="p-2 hover:bg-slate-100 rounded-full transition-colors text-slate-400">
                         <ArrowLeft className="w-6 h-6" />
                     </Link>
                     <div className="flex flex-col leading-tight">
-                        <span className="text-lg font-black tracking-tighter text-slate-800 uppercase italic">Gestore ERP Espositori</span>
+                        <span className="text-lg font-black tracking-tighter text-slate-800 uppercase italic">Event Logistics OS</span>
                         <span className="text-[10px] font-bold tracking-widest text-primary uppercase flex items-center gap-1">
-                            <Calendar className="w-3 h-3" /> Fermento Expo 2026 Admin
+                            <Calendar className="w-3 h-3" /> Fermento Expo 2026
                         </span>
                     </div>
                 </div>
-
                 <div className="hidden md:flex items-center gap-4 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                    <span className="bg-slate-100 px-3 py-1.5 rounded-lg text-slate-800 border border-slate-200">Verona Fiere</span>
                     <span className="bg-slate-100 px-3 py-1.5 rounded-lg text-slate-800 border border-slate-200">Padiglione 4 • Birra Artigianale</span>
                 </div>
             </header>
 
-            <main className="flex-1 p-8 grid grid-cols-1 xl:grid-cols-12 gap-8 max-w-[1600px] mx-auto w-full">
+            <main className="flex-1 p-8 grid grid-cols-1 xl:grid-cols-12 gap-8 max-w-[1800px] mx-auto w-full">
 
-                {/* Left Column: Technical Context */}
-                <aside className="xl:col-span-3 space-y-6">
-                    <div className="bg-slate-900 text-white p-8 rounded-[2.5rem] shadow-xl relative overflow-hidden group">
-                        <div className="relative z-10">
-                            <h3 className="text-sm font-black uppercase tracking-widest text-primary mb-6 flex items-center gap-2">
-                                <Zap className="w-4 h-4" /> Automazione AlSolved
-                            </h3>
-                            <div className="space-y-6">
-                                <div className="space-y-1">
-                                    <span className="text-[10px] font-black text-white/40 uppercase">Smart Validation</span>
-                                    <p className="text-xs text-white/70 leading-relaxed italic">Il sistema calcola istantaneamente il gap tra personale dichiarato e posti letto prenotati via API.</p>
+                {/* LEFT COLUMN: INPUTS */}
+                <div className="xl:col-span-5 space-y-8">
+
+                    {/* HOTEL CAPACITY WIDGET (Always Visible) */}
+                    <div className={`p-8 rounded-[2rem] border transition-all duration-500 relative overflow-hidden ${isOverCapacity ? 'bg-red-50 border-red-200' : 'bg-emerald-50 border-emerald-200'}`}>
+                        <div className="relative z-10 flex items-start justify-between">
+                            <div className="space-y-2">
+                                <h3 className={`text-sm font-black uppercase tracking-widest flex items-center gap-2 ${isOverCapacity ? 'text-red-600' : 'text-emerald-600'}`}>
+                                    <Hotel className="w-4 h-4" /> Hotel Capacity Check
+                                </h3>
+                                <div className="flex items-baseline gap-2">
+                                    <span className={`text-4xl font-black ${isOverCapacity ? 'text-red-900' : 'text-emerald-900'}`}>{totalStaff}</span>
+                                    <span className={`text-sm font-bold uppercase ${isOverCapacity ? 'text-red-400' : 'text-emerald-400'}`}>/ {HOTEL_CAPACITY_BEDS} POSTI LETTO</span>
                                 </div>
-                                <div className="space-y-1">
-                                    <span className="text-[10px] font-black text-white/40 uppercase">Zero-Cost Error</span>
-                                    <p className="text-xs text-white/70 leading-relaxed italic">Evitiamo over-booking o dimenticanze logistiche che pesano sul budget dell&apos;espositore.</p>
-                                </div>
-                                <div className="space-y-1">
-                                    <span className="text-[10px] font-black text-white/40 uppercase">Instant Issuance</span>
-                                    <p className="text-xs text-white/70 leading-relaxed italic">Al termine della validazione, il pass viene generato e sincronizzato con il controllo accessi della fiera.</p>
-                                </div>
+                                <p className={`text-xs font-medium max-w-xs ${isOverCapacity ? 'text-red-700' : 'text-emerald-700'}`}>
+                                    {isOverCapacity
+                                        ? "ATTENZIONE: Il numero di staff supera i posti letto assegnati. Contattare l'amministrazione per un upgrade."
+                                        : "Tutto ok. Il personale rientra nei limiti della prenotazione alberghiera."}
+                                </p>
+                            </div>
+                            <div className={`w-12 h-12 rounded-xl flex items-center justify-center shadow-lg ${isOverCapacity ? 'bg-red-100 text-red-600' : 'bg-emerald-100 text-emerald-600'}`}>
+                                {isOverCapacity ? <AlertTriangle className="w-6 h-6" /> : <CheckCircle2 className="w-6 h-6" />}
                             </div>
                         </div>
-                        <Activity className="absolute -right-6 -bottom-6 w-32 h-32 text-white/5 opacity-10 group-hover:rotate-12 transition-transform duration-1000" />
                     </div>
 
-                    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm">
-                        <h4 className="text-xs font-black uppercase tracking-widest text-slate-400 mb-4 flex items-center gap-2">
-                            <Info className="w-4 h-4" /> Nota di Progetto
-                        </h4>
-                        <p className="text-xs text-slate-500 leading-relaxed">
-                            Questa demo riproduce fedelmente la Sez. 5.1 delle specifiche: <strong>&apos;The Yellow Warning&apos;</strong>. Un alert non bloccante che guida l&apos;utente verso la scelta corretta.
-                        </p>
-                    </div>
-                </aside>
-
-                {/* Center Column: Form & Configuration */}
-                <div className="xl:col-span-6 space-y-8">
-                    <section className="bg-white p-10 rounded-[2.5rem] border border-slate-200 shadow-sm">
-                        <div className="flex items-center justify-between mb-10">
-                            <h2 className="text-3xl font-black tracking-tighter flex items-center gap-4">
-                                <Users className="w-8 h-8 text-primary" /> Analisi Personale
-                            </h2>
-                            <div className="flex items-center gap-4 bg-slate-50 p-2.5 rounded-3xl border border-slate-100 shadow-inner">
-                                <button
-                                    onClick={() => setStaffCount(Math.max(0, staffCount - 1))}
-                                    className="p-3 hover:bg-white hover:shadow-md rounded-2xl transition-all"
-                                >
-                                    <Minus className="w-5 h-5 text-slate-400" />
-                                </button>
-                                <span className="text-2xl font-black min-w-[3ch] text-center text-slate-900">{staffCount}</span>
-                                <button
-                                    onClick={() => setStaffCount(staffCount + 1)}
-                                    className="p-3 hover:bg-white hover:shadow-md rounded-2xl transition-all"
-                                >
-                                    <Plus className="w-5 h-5 text-slate-400" />
-                                </button>
-                            </div>
+                    {/* STAFF INPUT */}
+                    <section className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none">
+                            <Users className="w-32 h-32" />
                         </div>
-
-                        <div className="space-y-8">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                                <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Punto di Raccolta</span>
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-3 h-3 bg-primary rounded-full"></div>
-                                        <p className="font-bold text-slate-800">Main Entrance Verona Fiere</p>
-                                    </div>
-                                </div>
-                                <div className="p-6 bg-slate-50 rounded-[2rem] border border-slate-100">
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-2">Timeline Evento</span>
-                                    <div className="flex items-center gap-3">
-                                        <Calendar className="w-4 h-4 text-slate-400" />
-                                        <p className="font-bold text-slate-800">Marzo 14 - Marzo 18</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className="p-8 bg-emerald-50 rounded-[2.5rem] border border-emerald-100 flex items-center justify-between">
-                                <div className="space-y-1">
-                                    <h4 className="text-lg font-black text-emerald-900 tracking-tight">Accesso Espositore Validato</h4>
-                                    <p className="text-emerald-700/70 text-sm font-medium italic">Sincronizzazione API con il padiglione centrale attiva.</p>
-                                </div>
-                                <div className="w-14 h-14 bg-white rounded-2xl flex items-center justify-center shadow-lg shadow-emerald-900/10">
-                                    <CheckCircle2 className="w-8 h-8 text-emerald-500" />
-                                </div>
-                            </div>
-                        </div>
-                    </section>
-
-                    {/* Validation Logic Visual Feedback */}
-                    <AnimatePresence>
-                        {isOverCapacity && (
-                            <motion.div
-                                initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                                animate={{ opacity: 1, scale: 1, y: 0 }}
-                                exit={{ opacity: 0, scale: 0.95, y: 10 }}
-                                className="bg-amber-50 border border-amber-200 p-10 rounded-[2.5rem] flex flex-col md:flex-row gap-8 shadow-xl shadow-amber-900/5"
-                            >
-                                <div className="w-20 h-20 bg-amber-500 rounded-3xl flex items-center justify-center shrink-0 shadow-lg shadow-amber-500/30">
-                                    <AlertTriangle className="w-10 h-10 text-white" />
-                                </div>
-                                <div className="space-y-3">
-                                    <h3 className="text-2xl font-black text-amber-950 tracking-tight uppercase italic">Attenzione: Sbilanciamento Alloggi</h3>
-                                    <p className="text-amber-900/80 text-base leading-relaxed font-bold">
-                                        Stai dichiarando <span className="underline">{staffCount} operatori</span> ma hai prenotato solo <span className="underline">{totalBeds} letti</span>.
-                                    </p>
-                                    <p className="text-amber-800/60 text-sm">
-                                        Mancano <strong>{missingBeds} posti letto</strong>. Fermento Expo richiede che tutto lo staff sia alloggiato in strutture convenzionate.
-                                    </p>
-                                    <button className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.2em] text-amber-600 hover:text-amber-700 pt-4 transition-colors">
-                                        Modifica Prenotazione Camere <ArrowRight className="w-4 h-4" />
-                                    </button>
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </div>
-
-                {/* Right Column: Summary & Actions */}
-                <div className="xl:col-span-3 space-y-8">
-                    <section className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm flex flex-col min-h-[500px]">
-                        <h2 className="text-2xl font-black tracking-tight mb-8 flex items-center gap-3">
-                            <Hotel className="w-6 h-6 text-primary" /> Budget Logistico
+                        <h2 className="text-xl font-black tracking-tight mb-6 flex items-center gap-3 text-slate-800">
+                            <Users className="w-5 h-5 text-primary" /> Accredito Staff
+                            <span className="text-[10px] bg-slate-100 px-2 py-1 rounded text-slate-500 font-bold uppercase tracking-widest ml-auto">
+                                Max {MAX_STAFF}
+                            </span>
                         </h2>
 
-                        <div className="space-y-6 flex-1">
-                            <div className="flex justify-between items-center py-4 border-b border-slate-50">
-                                <span className="text-slate-500 font-bold text-xs uppercase tracking-widest">Capacità Hotel</span>
-                                <span className="font-black text-lg">{totalBeds}</span>
+                        <div className="space-y-4 relative z-10">
+                            <div className="grid grid-cols-2 gap-4">
+                                <input
+                                    type="text"
+                                    placeholder="Nome"
+                                    disabled={totalStaff >= MAX_STAFF}
+                                    value={staffInput.name}
+                                    onChange={(e) => setStaffInput({ ...staffInput, name: e.target.value })}
+                                    className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:opacity-50"
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Cognome"
+                                    disabled={totalStaff >= MAX_STAFF}
+                                    value={staffInput.surname}
+                                    onChange={(e) => setStaffInput({ ...staffInput, surname: e.target.value })}
+                                    className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary disabled:opacity-50"
+                                />
                             </div>
-                            <div className="flex justify-between items-center py-4 border-b border-slate-50">
-                                <span className="text-slate-500 font-bold text-xs uppercase tracking-widest">Posti Richiesti</span>
-                                <span className={`font-black text-lg ${isOverCapacity ? 'text-red-500' : 'text-slate-900'}`}>{staffCount}</span>
-                            </div>
-                            <div className="flex flex-col gap-2 pt-4">
-                                <span className="text-slate-500 font-bold text-xs uppercase tracking-widest mb-1">Stato Conferma</span>
-                                <span className={`text-[10px] font-black uppercase tracking-widest px-4 py-2 rounded-xl text-center border ${isOverCapacity
-                                        ? 'bg-red-50 text-red-600 border-red-100'
-                                        : 'bg-emerald-50 text-emerald-600 border-emerald-100'
-                                    }`}>
-                                    {isOverCapacity ? 'AZIONE RICHIESTA' : 'LOGISTICA OTTIMIZZATA'}
-                                </span>
-                            </div>
-                        </div>
-
-                        <div className="pt-10">
                             <button
-                                disabled={isOverCapacity || isGenerating}
-                                onClick={handleGeneratePass}
-                                className={`w-full py-6 rounded-[2rem] font-black text-lg flex items-center justify-center gap-3 transition-all duration-300 shadow-2xl ${isOverCapacity
-                                        ? 'bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200 shadow-none'
-                                        : 'bg-slate-900 text-white hover:brightness-110 shadow-slate-900/20'
-                                    }`}
+                                onClick={addStaff}
+                                disabled={!staffInput.name || !staffInput.surname || totalStaff >= MAX_STAFF}
+                                className="w-full py-4 bg-slate-900 text-white rounded-xl font-black text-sm uppercase tracking-wider hover:bg-slate-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                             >
-                                {isGenerating ? (
-                                    <span className="flex items-center gap-2">
-                                        <span className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></span>
-                                        Sincronizzazione...
-                                    </span>
-                                ) : (
-                                    <>
-                                        Genera Pass QR <QrCode className="w-5 h-5" />
-                                    </>
-                                )}
+                                <Plus className="w-4 h-4" /> Aggiungi Staff
                             </button>
                         </div>
                     </section>
-                </div>
-            </main>
 
-            {/* Pass Modal overlay */}
-            <AnimatePresence>
-                {showPass && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        className="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-xl flex items-center justify-center p-6"
-                    >
-                        <motion.div
-                            initial={{ scale: 0.9, y: 40, opacity: 0 }}
-                            animate={{ scale: 1, y: 0, opacity: 1 }}
-                            className="bg-white rounded-[3.5rem] p-12 max-w-sm w-full relative shadow-2xl overflow-hidden border border-white/20"
-                        >
+                    {/* REDUCED INPUT */}
+                    <section className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none">
+                            <Ticket className="w-32 h-32" />
+                        </div>
+                        <h2 className="text-xl font-black tracking-tight mb-6 flex items-center gap-3 text-slate-800">
+                            <Ticket className="w-5 h-5 text-indigo-500" /> Biglietti Ridotti
+                            <span className="text-[10px] bg-slate-100 px-2 py-1 rounded text-slate-500 font-bold uppercase tracking-widest ml-auto">
+                                Max {MAX_REDUCED}
+                            </span>
+                        </h2>
+
+                        <div className="space-y-4 relative z-10">
+                            <div className="grid grid-cols-2 gap-4">
+                                <input
+                                    type="text"
+                                    placeholder="Nome Ospite"
+                                    disabled={reducedList.length >= MAX_REDUCED}
+                                    value={reducedInput.name}
+                                    onChange={(e) => setReducedInput({ ...reducedInput, name: e.target.value })}
+                                    className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 disabled:opacity-50"
+                                />
+                                <input
+                                    type="text"
+                                    placeholder="Cognome Ospite"
+                                    disabled={reducedList.length >= MAX_REDUCED}
+                                    value={reducedInput.surname}
+                                    onChange={(e) => setReducedInput({ ...reducedInput, surname: e.target.value })}
+                                    className="px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500 disabled:opacity-50"
+                                />
+                            </div>
                             <button
-                                onClick={() => setShowPass(false)}
-                                className="absolute top-8 right-8 p-2 hover:bg-slate-100 rounded-full transition-colors"
+                                onClick={addReduced}
+                                disabled={!reducedInput.name || !reducedInput.surname || reducedList.length >= MAX_REDUCED}
+                                className="w-full py-4 bg-indigo-600 text-white rounded-xl font-black text-sm uppercase tracking-wider hover:bg-indigo-700 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-indigo-200"
                             >
-                                <X className="w-6 h-6 text-slate-400" />
+                                <Plus className="w-4 h-4" /> Genera Invito
                             </button>
+                        </div>
+                    </section>
 
-                            <div className="flex flex-col items-center text-center space-y-8">
-                                <div className="w-20 h-20 bg-primary/10 rounded-[2rem] flex items-center justify-center shadow-inner">
-                                    <QrCode className="w-10 h-10 text-primary" />
-                                </div>
-                                <div>
-                                    <h2 className="text-3xl font-black tracking-tighter mb-2 italic">PASS VALIDATO</h2>
-                                    <p className="text-slate-500 text-sm font-medium leading-relaxed px-4">
-                                        Piattaforma Fermento Expo: Il badge per lo staff è pronto e sincronizzato.
-                                    </p>
-                                </div>
+                    {/* BEER INPUT */}
+                    <section className="bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 right-0 p-6 opacity-5 pointer-events-none">
+                            <Beer className="w-32 h-32" />
+                        </div>
+                        <h2 className="text-xl font-black tracking-tight mb-6 flex items-center gap-3 text-slate-800">
+                            <Beer className="w-5 h-5 text-amber-500" /> Tap List
+                        </h2>
 
-                                {/* Mock Badge Graphic */}
-                                <div className="w-full bg-slate-50 p-8 rounded-[2.5rem] border-2 border-dashed border-slate-200">
-                                    <div className="aspect-square bg-white rounded-3xl flex items-center justify-center shadow-2xl mb-6 ring-8 ring-slate-100">
-                                        <QrCode className="w-28 h-28 text-slate-900" />
-                                    </div>
-                                    <div className="flex items-center justify-between border-t border-slate-200 pt-6">
-                                        <div className="text-left font-black leading-tight uppercase text-[9px]">
-                                            <span className="block text-slate-400 mb-0.5">Ruolo</span>
-                                            <span className="text-slate-900 tracking-tighter">ESPOSITORE</span>
-                                        </div>
-                                        <div className="text-right font-black leading-tight uppercase text-[9px]">
-                                            <span className="block text-slate-400 mb-0.5">Padiglione</span>
-                                            <span className="text-slate-900 tracking-tighter">ARTIGIANALE 4</span>
-                                        </div>
-                                    </div>
+                        <div className="space-y-4 relative z-10">
+                            <div className="grid grid-cols-3 gap-4">
+                                <div className="col-span-2">
+                                    <input
+                                        type="text"
+                                        placeholder="Nome Birra"
+                                        value={beerInput.name}
+                                        onChange={(e) => setBeerInput({ ...beerInput, name: e.target.value })}
+                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+                                    />
                                 </div>
-
-                                <div className="flex w-full gap-4">
-                                    <button className="flex-1 py-5 bg-slate-900 text-white rounded-[1.5rem] font-black text-xs flex items-center justify-center gap-2 hover:bg-slate-800 transition-colors uppercase italic tracking-tighter shadow-lg">
-                                        <Printer className="w-4 h-4" /> Stampa
-                                    </button>
-                                    <button className="flex-1 py-5 border-2 border-slate-100 rounded-[1.5rem] font-black text-xs flex items-center justify-center gap-2 hover:bg-slate-50 transition-colors uppercase italic tracking-tighter">
-                                        <Download className="w-4 h-4" /> PDF
-                                    </button>
+                                <div className="col-span-1">
+                                    <input
+                                        type="text"
+                                        placeholder="Vol %"
+                                        value={beerInput.degree}
+                                        onChange={(e) => setBeerInput({ ...beerInput, degree: e.target.value })}
+                                        className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500"
+                                    />
                                 </div>
                             </div>
-                        </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                            <textarea
+                                placeholder="Descrizione breve / Stile"
+                                rows={2}
+                                value={beerInput.description}
+                                onChange={(e) => setBeerInput({ ...beerInput, description: e.target.value })}
+                                className="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-amber-500/20 focus:border-amber-500 resize-none"
+                            />
+                            <button
+                                onClick={addBeer}
+                                disabled={!beerInput.name || !beerInput.degree}
+                                className="w-full py-4 bg-amber-500 text-white rounded-xl font-black text-sm uppercase tracking-wider hover:bg-amber-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg shadow-amber-200"
+                            >
+                                <Plus className="w-4 h-4" /> Aggiungi alla Spina
+                            </button>
+                        </div>
+                    </section>
 
-            {/* Footer Meta */}
-            <footer className="p-12 text-center bg-white border-t border-slate-100">
-                <p className="text-slate-400 text-[10px] font-black tracking-[0.4em] uppercase opacity-40">
-                    AlSolved Advanced ERP Logic • Fermento Birra Exclusive Implementation
-                </p>
-            </footer>
+                </div>
+
+                {/* RIGHT COLUMN: SUMMARY & OUTPUT */}
+                <div className="xl:col-span-7 space-y-8 flex flex-col">
+
+                    {/* PRINT ACTION */}
+                    <div className="flex justify-end sticky top-24 z-20">
+                        <button
+                            onClick={handlePrint}
+                            disabled={isPrinting}
+                            className="bg-slate-900 text-white px-8 py-4 rounded-[1.5rem] font-black uppercase tracking-wider shadow-xl shadow-slate-900/20 flex items-center gap-3 hover:scale-105 transition-transform active:scale-95 disabled:opacity-80"
+                        >
+                            {isPrinting ? (
+                                <>
+                                    <Loader2 className="w-5 h-5 animate-spin" />
+                                    Generazione PDF...
+                                </>
+                            ) : (
+                                <>
+                                    <Printer className="w-5 h-5" />
+                                    Stampa Riepilogo PDF
+                                </>
+                            )}
+                        </button>
+                    </div>
+
+                    <div className="space-y-8 pb-20">
+                        {/* STAFF LIST */}
+                        {staffList.length > 0 && (
+                            <div className="space-y-4">
+                                <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest px-2">Personale Accreditato ({staffList.length})</h3>
+                                <AnimatePresence>
+                                    {staffList.map((staff) => (
+                                        <motion.div
+                                            key={staff.id}
+                                            initial={{ opacity: 0, x: 20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            exit={{ opacity: 0, x: -20 }}
+                                            className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-6 group hover:shadow-md transition-shadow"
+                                        >
+                                            <div className="w-16 h-16 bg-slate-900 rounded-2xl flex items-center justify-center shrink-0">
+                                                <QrCode className="w-8 h-8 text-white" />
+                                            </div>
+                                            <div className="flex-1">
+                                                <p className="font-black text-lg text-slate-900 leading-none mb-1">{staff.name} {staff.surname}</p>
+                                                <p className="text-[10px] font-bold text-primary uppercase tracking-widest bg-primary/10 inline-block px-2 py-0.5 rounded">Staff Espositore</p>
+                                            </div>
+                                            <button onClick={() => removeStaff(staff.id)} className="p-3 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                                                <Trash2 className="w-5 h-5" />
+                                            </button>
+                                        </motion.div>
+                                    ))}
+                                </AnimatePresence>
+                            </div>
+                        )}
+
+                        {/* REDUCED LIST */}
+                        {reducedList.length > 0 && (
+                            <div className="space-y-4">
+                                <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest px-2">Inviti Ridotti ({reducedList.length})</h3>
+                                <AnimatePresence>
+                                    {reducedList.map((ticket) => (
+                                        <motion.div
+                                            key={ticket.id}
+                                            initial={{ opacity: 0, x: 20 }}
+                                            animate={{ opacity: 1, x: 0 }}
+                                            exit={{ opacity: 0, x: -20 }}
+                                            className="bg-white p-4 rounded-3xl border border-slate-100 shadow-sm flex items-center gap-6 group hover:shadow-md transition-shadow"
+                                        >
+                                            <div className="w-16 h-16 bg-indigo-500 rounded-2xl flex items-center justify-center shrink-0 shadow-lg shadow-indigo-200">
+                                                <QrCode className="w-8 h-8 text-white" />
+                                            </div>
+                                            <div className="flex-1">
+                                                <p className="font-black text-lg text-slate-900 leading-none mb-1">{ticket.name} {ticket.surname}</p>
+                                                <p className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest bg-indigo-50 inline-block px-2 py-0.5 rounded">Pass Ridotto</p>
+                                            </div>
+                                            <button onClick={() => removeReduced(ticket.id)} className="p-3 text-slate-300 hover:text-red-500 hover:bg-red-50 rounded-xl transition-colors">
+                                                <Trash2 className="w-5 h-5" />
+                                            </button>
+                                        </motion.div>
+                                    ))}
+                                </AnimatePresence>
+                            </div>
+                        )}
+
+                        {/* BEER LIST */}
+                        {beerList.length > 0 && (
+                            <div className="space-y-4">
+                                <h3 className="text-sm font-black text-slate-400 uppercase tracking-widest px-2">Lista Birre in Spina</h3>
+                                <AnimatePresence>
+                                    {beerList.map((beer) => (
+                                        <motion.div
+                                            key={beer.id}
+                                            initial={{ opacity: 0, y: 20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, scale: 0.9 }}
+                                            className="bg-amber-50 p-6 rounded-[2rem] border border-amber-100 shadow-sm flex items-start gap-6 relative overflow-hidden"
+                                        >
+                                            <div className="absolute -right-4 -bottom-4 opacity-10 rotate-12">
+                                                <Beer className="w-24 h-24 text-amber-900" />
+                                            </div>
+                                            <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shrink-0 shadow-sm border border-amber-100 text-amber-600 font-black text-xs">
+                                                {beer.degree}
+                                            </div>
+                                            <div className="flex-1 relative z-10">
+                                                <h4 className="font-black text-lg text-amber-950 mb-1">{beer.name}</h4>
+                                                <p className="text-amber-800/70 text-sm font-medium leading-relaxed max-w-md">{beer.description}</p>
+                                            </div>
+                                            <button onClick={() => removeBeer(beer.id)} className="relative z-10 p-2 text-amber-300 hover:text-red-500 transition-colors">
+                                                <Trash2 className="w-5 h-5" />
+                                            </button>
+                                        </motion.div>
+                                    ))}
+                                </AnimatePresence>
+                            </div>
+                        )}
+
+                        {/* EMPTY STATE */}
+                        {staffList.length === 0 && reducedList.length === 0 && beerList.length === 0 && (
+                            <div className="h-full flex flex-col items-center justify-center text-center opacity-30 py-20">
+                                <FileText className="w-24 h-24 mb-4" />
+                                <p className="text-xl font-black">Nessun Dato Inserito</p>
+                                <p className="font-medium">Utilizza i moduli a sinistra per popolare il tuo evento.</p>
+                            </div>
+                        )}
+
+                    </div>
+                </div>
+
+            </main>
         </div>
     );
 }

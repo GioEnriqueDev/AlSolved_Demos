@@ -7,65 +7,61 @@ export default function LoadingScreen({ onComplete }: { onComplete?: () => void 
     const [isVisible, setIsVisible] = useState(true);
 
     useEffect(() => {
+        // Fast, cinematic timing: 2.5s total
         const timer = setTimeout(() => {
             setIsVisible(false);
-            if (onComplete) onComplete();
-        }, 3500); // Cinematic duration
+            if (onComplete) setTimeout(onComplete, 500);
+        }, 2200);
         return () => clearTimeout(timer);
     }, [onComplete]);
 
     return (
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
             {isVisible && (
                 <motion.div
                     initial={{ opacity: 1 }}
-                    exit={{ opacity: 0, filter: 'blur(20px)' }}
-                    transition={{ duration: 1, ease: "easeInOut" }}
-                    className="fixed inset-0 z-[100] bg-slate-950 flex flex-col items-center justify-center overflow-hidden"
+                    exit={{ opacity: 0, scale: 1.1, filter: 'blur(10px)' }}
+                    transition={{ duration: 0.6, ease: "easeInOut" }}
+                    className="fixed inset-0 z-[100] bg-black flex flex-col items-center justify-center overflow-hidden"
                 >
-                    <div className="relative scale-150">
-                        {/* Netflix-style Logo Animation (Ribbon Effect) */}
+                    <div className="relative flex flex-col items-center justify-center w-full max-w-lg px-8">
+                        {/* The Liquid Reveal Container */}
+                        <div className="relative overflow-hidden">
+                            {/* Text Mask */}
+                            <h1 className="text-5xl md:text-7xl font-black tracking-tighter italic uppercase text-transparent bg-clip-text bg-white/10 relative z-20">
+                                FERMENTO
+                            </h1>
+
+                            {/* Liquid Fill Animation */}
+                            <motion.div
+                                initial={{ height: '0%' }}
+                                animate={{ height: '100%' }}
+                                transition={{ duration: 1.8, ease: "easeInOut" }}
+                                className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-orange-600 via-amber-500 to-amber-300 z-10 mix-blend-screen"
+                            />
+
+                            {/* Overlay Text to Restore Sharpness */}
+                            <h1 className="absolute inset-0 text-5xl md:text-7xl font-black tracking-tighter italic uppercase text-transparent bg-clip-text bg-gradient-to-t from-transparent to-white/5 z-30">
+                                FERMENTO
+                            </h1>
+                        </div>
+
                         <motion.div
-                            initial={{ scale: 0.8, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            transition={{ duration: 0.8, ease: "easeOut" }}
-                            className="flex flex-col items-center"
+                            initial={{ width: 0 }}
+                            animate={{ width: '100%' }}
+                            transition={{ duration: 1.8, ease: "easeInOut" }}
+                            className="h-1 bg-orange-600 mt-4 shadow-[0_0_20px_rgba(234,88,12,0.8)]"
+                        />
+
+                        <motion.p
+                            initial={{ opacity: 0, letterSpacing: '0.1em' }}
+                            animate={{ opacity: 1, letterSpacing: '0.5em' }}
+                            transition={{ duration: 1.5, delay: 0.5 }}
+                            className="text-[10px] font-bold text-orange-500/60 uppercase mt-4 text-center"
                         >
-                            <div className="w-24 h-24 bg-orange-600 rounded-3xl flex items-center justify-center shadow-2xl shadow-orange-600/40 mb-6 relative overflow-hidden group">
-                                <span className="text-4xl font-black text-white relative z-10">FB</span>
-
-                                {/* Animated Shine Sweep */}
-                                <motion.div
-                                    initial={{ x: '-100%' }}
-                                    animate={{ x: '100%' }}
-                                    transition={{ repeat: Infinity, duration: 1.5, ease: "linear", repeatDelay: 0.5 }}
-                                    className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent skew-x-12 z-0"
-                                />
-                            </div>
-
-                            {/* Loading Bar */}
-                            <div className="w-48 h-1 bg-white/10 rounded-full overflow-hidden">
-                                <motion.div
-                                    initial={{ x: '-100%' }}
-                                    animate={{ x: '0%' }}
-                                    transition={{ duration: 3, ease: "easeInOut" }}
-                                    className="h-full w-full bg-orange-600 shadow-[0_0_15px_rgba(234,88,12,0.6)]"
-                                />
-                            </div>
-                        </motion.div>
-
-                        {/* Background Ambient Glow */}
-                        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-orange-600/10 rounded-full blur-[120px] -z-10" />
+                            Digital Brewing Experience
+                        </motion.p>
                     </div>
-
-                    <motion.p
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.5 }}
-                        className="absolute bottom-12 text-[10px] font-black tracking-[0.5em] text-orange-500/50 uppercase"
-                    >
-                        Fermento Digital Infrastructure
-                    </motion.p>
                 </motion.div>
             )}
         </AnimatePresence>

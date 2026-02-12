@@ -2,9 +2,8 @@
 
 import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronLeft, ChevronRight, Play } from 'lucide-react';
-import { getAssetPath } from '@/lib/utils';
-import Link from 'next/link';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import MagazineCard from './MagazineCard';
 
 interface Magazine {
     id: number;
@@ -26,61 +25,45 @@ export default function ContentRail({ title, magazines }: { title: string, magaz
 
     return (
         <div className="space-y-4 py-8 relative group/rail">
-            <h2 className="px-8 md:px-16 text-2xl font-black text-white tracking-tight uppercase italic flex items-center gap-3">
-                <div className="w-1.5 h-6 bg-orange-600 rounded-full"></div>
+            <motion.h2
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="px-4 md:px-16 text-2xl md:text-3xl font-black text-white tracking-tighter uppercase italic flex items-center gap-4"
+            >
+                <div className="w-2 h-6 md:h-8 bg-orange-600 rounded-full shadow-[0_0_15px_rgba(234,88,12,0.5)]"></div>
                 {title}
-            </h2>
+            </motion.h2>
 
-            <div className="relative">
-                {/* Scroll Controls */}
+            <div className="relative group/controls">
+                {/* Scroll Controls Refined - Hidden on Mobile */}
                 <button
                     onClick={() => scroll('left')}
-                    className="absolute left-0 top-0 bottom-0 z-20 w-16 bg-gradient-to-r from-black to-transparent opacity-0 group-hover/rail:opacity-100 transition-opacity flex items-center justify-center text-white"
+                    className="hidden md:flex absolute left-0 top-0 bottom-0 z-40 w-20 bg-gradient-to-r from-black via-black/60 to-transparent opacity-0 group-hover/controls:opacity-100 transition-opacity items-center justify-center text-white cursor-pointer"
                 >
-                    <ChevronLeft className="w-10 h-10 hover:scale-125 transition-transform" />
+                    <div className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center hover:scale-110 active:scale-90 transition-all border border-white/10">
+                        <ChevronLeft className="w-8 h-8" />
+                    </div>
                 </button>
 
                 <div
                     ref={scrollRef}
-                    className="flex gap-4 overflow-x-auto overflow-y-hidden scrollbar-hide px-8 md:px-16 py-8"
+                    className="flex gap-4 md:gap-6 overflow-x-auto overflow-y-hidden snap-x snap-mandatory scrollbar-hide px-4 md:px-16 py-8 md:py-12"
                 >
-                    {magazines.map((mag, i) => (
-                        <motion.div
-                            key={mag.id}
-                            initial={{ opacity: 0, x: 20 }}
-                            animate={{ opacity: 1, x: 0 }}
-                            transition={{ delay: i * 0.1 }}
-                            className="relative flex-none w-48 md:w-64 aspect-[2/3] group cursor-pointer"
-                        >
-                            <Link href="/reader">
-                                <div className="w-full h-full rounded-xl overflow-hidden shadow-2xl transition-all duration-500 group-hover:scale-[1.05] group-hover:z-30 group-hover:shadow-orange-600/20">
-                                    <img
-                                        src={getAssetPath(mag.image)}
-                                        className="w-full h-full object-cover"
-                                        alt={mag.title}
-                                    />
-
-                                    {/* Hover Overlay */}
-                                    <div className="absolute inset-0 bg-black/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6 space-y-3">
-                                        <div className="space-y-1">
-                                            <span className="text-[10px] font-black text-orange-500 uppercase tracking-widest">{mag.year}</span>
-                                            <h4 className="text-lg font-black text-white leading-none uppercase">{mag.title}</h4>
-                                        </div>
-                                        <div className="flex items-center gap-2 text-[10px] font-black text-white px-3 py-2 bg-orange-600 rounded-lg w-fit">
-                                            <Play className="w-3 h-3 fill-current" /> LEGGI ORA
-                                        </div>
-                                    </div>
-                                </div>
-                            </Link>
-                        </motion.div>
+                    {magazines.map((mag) => (
+                        <div key={mag.id} className="snap-center shrink-0 w-[45vw] md:w-auto">
+                            <MagazineCard magazine={mag} />
+                        </div>
                     ))}
                 </div>
 
                 <button
                     onClick={() => scroll('right')}
-                    className="absolute right-0 top-0 bottom-0 z-20 w-16 bg-gradient-to-l from-black to-transparent opacity-0 group-hover/rail:opacity-100 transition-opacity flex items-center justify-center text-white"
+                    className="hidden md:flex absolute right-0 top-0 bottom-0 z-40 w-20 bg-gradient-to-l from-black via-black/60 to-transparent opacity-0 group-hover/controls:opacity-100 transition-opacity items-center justify-center text-white cursor-pointer"
                 >
-                    <ChevronRight className="w-10 h-10 hover:scale-125 transition-transform" />
+                    <div className="w-12 h-12 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center hover:scale-110 active:scale-90 transition-all border border-white/10">
+                        <ChevronRight className="w-8 h-8" />
+                    </div>
                 </button>
             </div>
 
