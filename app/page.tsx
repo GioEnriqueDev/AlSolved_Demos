@@ -133,15 +133,6 @@ export default function Home() {
             {/* Sales Focus Action Buttons */}
             <motion.div variants={textReveal} className="flex flex-col md:flex-row items-center gap-4 pt-6">
               <Link
-                href="/login"
-                onMouseEnter={() => setIsHovered(true)}
-                onMouseLeave={() => setIsHovered(false)}
-                className="px-12 py-5 rounded-full bg-primary text-white font-black text-lg hover:brightness-110 transition-all duration-300 shadow-2xl shadow-primary/30 flex items-center gap-3 group"
-              >
-                Esplora i Vertical Slice
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
-              </Link>
-              <Link
                 href="https://alsolved.it"
                 target="_blank"
                 onMouseEnter={() => setIsHovered(true)}
