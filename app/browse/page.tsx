@@ -9,13 +9,15 @@ import BrandedAd from '@/components/platform/BrandedAd';
 import GoogleAd from '@/components/platform/GoogleAd';
 import { motion } from 'framer-motion';
 
+import { getAssetPath } from '@/lib/utils';
+
 const MOCK_MAGAZINES = [
-    { id: 1, title: 'Speciale Edizione 2026', image: '/images/p1.png', year: '2026', category: 'Platinum' },
-    { id: 2, title: 'I Segreti del Rame', image: '/images/p2.png', year: '2025', category: 'Tecnica' },
-    { id: 3, title: 'Luppoli d\'Autore', image: '/images/p3.png', year: '2025', category: 'Ingredienti' },
-    { id: 4, title: 'Imperial Stout Guide', image: '/images/p4.png', year: '2025', category: 'Stili' },
-    { id: 5, title: 'Tropical IPA Era', image: '/images/p5.png', year: '2024', category: 'Trend' },
-    { id: 6, title: 'Archivio Fermento #06', image: '/images/p6.png', year: '2024', category: 'Archivio' },
+    { id: 1, title: 'Speciale Edizione 2026', image: getAssetPath('/images/p1.png'), year: '2026', category: 'Platinum' },
+    { id: 2, title: 'I Segreti del Rame', image: getAssetPath('/images/p2.png'), year: '2025', category: 'Tecnica' },
+    { id: 3, title: 'Luppoli d\'Autore', image: getAssetPath('/images/p3.png'), year: '2025', category: 'Ingredienti' },
+    { id: 4, title: 'Imperial Stout Guide', image: getAssetPath('/images/p4.png'), year: '2025', category: 'Stili' },
+    { id: 5, title: 'Tropical IPA Era', image: getAssetPath('/images/p5.png'), year: '2024', category: 'Trend' },
+    { id: 6, title: 'Archivio Fermento #06', image: getAssetPath('/images/p6.png'), year: '2024', category: 'Archivio' },
 ];
 
 export default function BrowsePage() {
@@ -37,7 +39,7 @@ export default function BrowsePage() {
                     <BrandedAd
                         brand="Birra Peroni"
                         title="Riserva Doppio Malto: L'eccellenza italiana dal 1846."
-                        image="/images/ad_peroni_sponsored.png"
+                        image={getAssetPath("/images/p1.png")}
                         link="https://www.peroni.it"
                     />
                     <GoogleAd slot="1234567890" className="h-[400px]" />

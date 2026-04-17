@@ -4,13 +4,14 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Instagram, Film, Layout, ArrowLeft, ExternalLink, Sparkles, ShieldAlert, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
+import { getAssetPath } from '@/lib/utils';
 
 const IMAGES = [
-  '/case-studies/back-to-black/1.jpg',
-  '/case-studies/back-to-black/2.jpg',
-  '/case-studies/back-to-black/3.jpg',
-  '/case-studies/back-to-black/4.jpg',
-  '/case-studies/back-to-black/5.jpg',
+  getAssetPath('/case-studies/back-to-black/1.jpg'),
+  getAssetPath('/case-studies/back-to-black/2.jpg'),
+  getAssetPath('/case-studies/back-to-black/3.jpg'),
+  getAssetPath('/case-studies/back-to-black/4.jpg'),
+  getAssetPath('/case-studies/back-to-black/5.jpg'),
 ];
 
 export default function SocialManagementPage() {
@@ -79,7 +80,7 @@ export default function SocialManagementPage() {
             <div className="absolute inset-0 bg-slate-900 rounded-[3rem] p-3 shadow-2xl overflow-hidden border-4 border-slate-800">
               <div className="relative w-full h-full rounded-[2.2rem] overflow-hidden bg-black">
                 <video
-                  src="/case-studies/back-to-black/social-reel.mp4"
+                  src={getAssetPath("/case-studies/back-to-black/social-reel.mp4")}
                   autoPlay
                   loop
                   muted

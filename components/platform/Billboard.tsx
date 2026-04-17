@@ -33,8 +33,8 @@ export default function Billboard() {
                 className="absolute inset-0 z-0"
             >
                 <img
-                    src={getAssetPath('/images/billboard_hero_beer_masterpiece.png')}
-                    className="w-full h-full object-cover object-center transition-all duration-700"
+                    src={getAssetPath('/images/p6.png')}
+                    className="w-full h-full object-cover object-center transition-all duration-700 opacity-70"
                     alt="Featured Magazine"
                     onError={(e) => {
                         e.currentTarget.src = "https://images.unsplash.com/photo-1535958636474-b021ee887b13?auto=format&fit=crop&q=80";
