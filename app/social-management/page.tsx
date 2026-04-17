@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Instagram, Film, Layout, ArrowLeft, ExternalLink, Sparkles, ShieldAlert } from 'lucide-react';
+import { Instagram, Film, Layout, ArrowLeft, ExternalLink, Sparkles, ShieldAlert, AlertTriangle } from 'lucide-react';
 import Link from 'next/link';
 
 const IMAGES = [
